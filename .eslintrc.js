@@ -1,0 +1,50 @@
+module.exports = {
+	env: {
+		browser: true,
+		es2021: true,
+	},
+	extends: [
+		'eslint:recommended',
+		'plugin:react/recommended',
+		'airbnb',
+		'prettier',
+		'plugin:prettier/recommended',
+	],
+	parserOptions: {
+		ecmaFeatures: {
+			jsx: true,
+		},
+		ecmaVersion: 12,
+		sourceType: 'module',
+	},
+	plugins: ['react', 'prettier'],
+	parser: 'babel-eslint',
+	rules: {
+		'linebreak-style': 0,
+		'no-console': 1,
+		'no-tabs': 0,
+		'no-empty': 1,
+		'eol-last': 0,
+		'no-undef': 1,
+		'no-unused-vars': 1,
+		'quote-props': ['error', 'consistent', { keywords: true }],
+		'no-useless-escape': 0,
+		'import/newline-after-import': [1, { count: 1 }],
+		'react/jsx-filename-extension': [1, { extensions: ['.js', '.jsx'] }],
+		'react/react-in-jsx-scope': 'off',
+		'prettier/prettier': [
+			'error',
+			{
+				trailingComma: 'all',
+				semi: false,
+				singleQuote: true,
+				useTabs: true,
+				endOfLine: 'auto',
+				bracketSpacing: true,
+				printWidth: 85,
+				tabWidth: 4,
+				parser: 'flow',
+			},
+		],
+	},
+}
