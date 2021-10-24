@@ -2,7 +2,7 @@ import React, { useEffect, useState } from 'react'
 
 import './SortingVisualier.css'
 
-const TIME_SPEED = 150
+const TIME_SPEED = 200
 
 // This is the main color of the array bars.
 const PRIMARY_COLOR = 'turquoise'
@@ -60,7 +60,7 @@ async function changeColorAnimation(arr, i, color, ms = TIME_SPEED) {
 }
 
 function getInnerContent(arr, i) {
-    return Number(arr[i].children[0].innerText) || arr[i].children[0].innerHTML
+    return Number(arr[i].children[0].innerText) || arr[i].childNodes[0].innerHTML
 }
 
 function isArraySorted(arr) {
@@ -73,6 +73,12 @@ function isArraySorted(arr) {
         }
     }
     return true
+}
+
+async function finishedSort(bars, ms) {
+    for (let k = 0; k < bars.length; k++) {
+        await changeColorAnimation(bars, k, PRIMARY_COLOR, ms)
+    }
 }
 
 const partition = async (arr, start, end) => {
@@ -151,15 +157,11 @@ function SortingVisualier() {
             await Promise.all([
                 swapHeight(bars, minIndex, i),
                 swapContent(bars, minIndex, i),
-            ])
-            await Promise.all([
                 changeColorAnimation(bars, minIndex, PRIMARY_COLOR),
                 changeColorAnimation(bars, i, THIRST_COLOR),
             ])
         }
-        for (let k = 0; k < bars.length; k++) {
-            await changeColorAnimation(bars, k, PRIMARY_COLOR, 100)
-        }
+        await finishedSort(bars, 100)
     }
 
     const bubbleSort = async () => {
@@ -189,15 +191,56 @@ function SortingVisualier() {
                 await changeColorAnimation(bars, 0, THIRST_COLOR)
             }
         }
-        for (let k = 0; k < bars.length; k++) {
-            await changeColorAnimation(bars, k, PRIMARY_COLOR, 100)
+        await finishedSort(bars, 100)
+    }
+
+    const insertionSort = async () => {
+        const bars = document.querySelectorAll('.bar')
+
+        await changeColorAnimation(bars, 0, THIRST_COLOR)
+
+        for (let i = 1; i < bars.length; i++) {
+            const key = getInnerContent(bars, i)
+
+            const heightElement = bars[i].style.height
+            let j = i - 1
+
+            await changeColorAnimation(bars, i, CORLOR_RUN)
+
+            while (j >= 0 && getInnerContent(bars, j) > key) {
+                bars[j].style.backgroundColor = 'darkblue'
+                // await changeColorAnimation(bars, j, CORLOR_RUN)
+
+                bars[j + 1].children[0].innerText = getInnerContent(bars, j)
+                bars[j + 1].style.height = bars[j].style.height
+
+                j -= 1
+
+                for (let k = i; k >= 0; k--) {
+                    bars[k].style.backgroundColor = PINK_COLOR
+                }
+            }
+
+            bars[j + 1].style.height = heightElement
+            bars[j + 1].childNodes[0].innerHTML = key
+
+            // await sleep(500)
+            // bars[i].style.backgroundColor = ' rgb(49, 226, 13)'
+            await changeColorAnimation(bars, i, THIRST_COLOR)
+            if (i === bars.length - 1) {
+                for (let k = 0; k <= i; k++) {
+                    // bars[k].style.backgroundColor = THIRST_COLOR
+                    await changeColorAnimation(bars, k, THIRST_COLOR, 100)
+                }
+            }
         }
+        await finishedSort(bars, 100)
     }
 
     const resetArray = () => {
         const array = []
         for (let i = 0; i < COUNT_RANGE; i++) {
-            array.push(randomIntFromInterval(10, 400))
+            array.push(randomIntFromInterval(20, 400))
         }
         setCurrentArray(array)
     }
@@ -244,6 +287,9 @@ function SortingVisualier() {
             </button>
             <button type="button" onClick={bubbleSort}>
                 Bubble sort
+            </button>
+            <button type="button" onClick={insertionSort}>
+                Insertion sort
             </button>
         </>
     )
