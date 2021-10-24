@@ -2,7 +2,7 @@ import React, { useEffect, useState } from 'react'
 
 import './SortingVisualier.css'
 
-const TIME_SPEED = 100
+const TIME_SPEED = 150
 
 // This is the main color of the array bars.
 const PRIMARY_COLOR = 'turquoise'
@@ -11,6 +11,12 @@ const PRIMARY_COLOR = 'turquoise'
 const SECONDARY_COLOR = '#d61d1dcc'
 
 const THIRST_COLOR = 'rgb(49, 226, 13)'
+
+const CORLOR_RUN = 'rgb(80, 80, 174)'
+
+const YELLOW_COLOR = 'yellow'
+const ORANGE_COLOR = 'orange'
+const PINK_COLOR = 'pink'
 
 const COUNT_RANGE = 10
 
@@ -72,23 +78,23 @@ function isArraySorted(arr) {
 const partition = async (arr, start, end) => {
     const poviotValues = getInnerContent(arr, end)
     let i = start - 1
-    await changeColorAnimation(arr, end, '#5050ae')
+    await changeColorAnimation(arr, end, CORLOR_RUN)
 
     for (let j = start; j < end; j++) {
         const currentBar = getInnerContent(arr, j)
 
-        await changeColorAnimation(arr, j, 'yellow')
+        await changeColorAnimation(arr, j, YELLOW_COLOR)
 
         if (currentBar <= poviotValues) {
             i++
             await Promise.all([swapHeight(arr, i, j), swapContent(arr, i, j)])
-            await changeColorAnimation(arr, i, 'orange')
+            await changeColorAnimation(arr, i, ORANGE_COLOR)
 
             if (i !== j) {
-                await changeColorAnimation(arr, j, 'pink')
+                await changeColorAnimation(arr, j, PINK_COLOR)
             }
         } else {
-            await changeColorAnimation(arr, j, 'pink')
+            await changeColorAnimation(arr, j, PINK_COLOR)
         }
     }
     await Promise.all([swapHeight(arr, i + 1, end), swapContent(arr, i + 1, end)])
@@ -124,7 +130,7 @@ function SortingVisualier() {
 
         for (let i = 0; i < bars.length; i++) {
             minIndex = i
-            await changeColorAnimation(bars, i, '#5050ae')
+            await changeColorAnimation(bars, i, CORLOR_RUN)
 
             for (let j = i + 1; j < bars.length; j++) {
                 await changeColorAnimation(bars, j, SECONDARY_COLOR)
@@ -150,6 +156,38 @@ function SortingVisualier() {
                 changeColorAnimation(bars, minIndex, PRIMARY_COLOR),
                 changeColorAnimation(bars, i, THIRST_COLOR),
             ])
+        }
+        for (let k = 0; k < bars.length; k++) {
+            await changeColorAnimation(bars, k, PRIMARY_COLOR, 100)
+        }
+    }
+
+    const bubbleSort = async () => {
+        const bars = document.querySelectorAll('.bar')
+
+        for (let i = 0; i < bars.length - 1; i++) {
+            for (let j = 0; j < bars.length - i - 1; j++) {
+                const x = getInnerContent(bars, j)
+                const y = getInnerContent(bars, j + 1)
+                await Promise.all([
+                    await changeColorAnimation(bars, j, CORLOR_RUN),
+                    await changeColorAnimation(bars, j + 1, CORLOR_RUN),
+                ])
+                if (y < x) {
+                    await Promise.all([
+                        swapHeight(bars, j, j + 1),
+                        swapContent(bars, j, j + 1),
+                    ])
+                }
+                await Promise.all([
+                    await changeColorAnimation(bars, j, PINK_COLOR),
+                    await changeColorAnimation(bars, j + 1, PINK_COLOR),
+                ])
+            }
+            await changeColorAnimation(bars, bars.length - i - 1, THIRST_COLOR)
+            if (bars.length - i - 1 === 1) {
+                await changeColorAnimation(bars, 0, THIRST_COLOR)
+            }
         }
         for (let k = 0; k < bars.length; k++) {
             await changeColorAnimation(bars, k, PRIMARY_COLOR, 100)
@@ -203,6 +241,9 @@ function SortingVisualier() {
             </button>
             <button type="button" onClick={selectionSort}>
                 Selection sort
+            </button>
+            <button type="button" onClick={bubbleSort}>
+                Bubble sort
             </button>
         </>
     )
