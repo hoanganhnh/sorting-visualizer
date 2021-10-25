@@ -310,6 +310,57 @@ function SortingVisualier() {
         await finishedSort(bars, 100)
     }
 
+    const heapify = async (arr, n, i) => {
+        let largest = i
+        const l = 2 * i + 1
+        const r = 2 * i + 2
+
+        if (
+            l < n &&
+            Number(arr[l].childNodes[0].innerHTML) >
+                Number(arr[largest].childNodes[0].innerHTML)
+        ) {
+            largest = l
+        }
+
+        if (
+            r < n &&
+            Number(arr[r].childNodes[0].innerHTML) >
+                Number(arr[largest].childNodes[0].innerHTML)
+        ) {
+            largest = r
+        }
+
+        if (largest !== i) {
+            await Promise.all([
+                changeColorAnimation(arr, i, ORANGE_COLOR),
+                swapHeight(arr, i, largest),
+                swapContent(arr, i, largest),
+                heapify(arr, n, largest),
+            ])
+        }
+
+        arr[largest].style.backgroundColor = SECONDARY_COLOR
+    }
+
+    const heapSort = async (arr, n) => {
+        for (let i = Math.floor(n / 2) - 1; i >= 0; i--) {
+            await changeColorAnimation(arr, i, PINK_COLOR)
+            await Promise.all([heapify(arr, n, i)])
+        }
+
+        for (let i = n - 1; i > 0; i--) {
+            await changeColorAnimation(arr, i, THIRST_COLOR, 200)
+            await Promise.all([
+                swapHeight(arr, 0, i),
+                swapContent(arr, 0, i),
+                heapify(arr, i, 0),
+            ])
+        }
+        arr[0].style.backgroundColor = THIRST_COLOR
+        await finishedSort(arr, 100)
+    }
+
     const resetArray = () => {
         const array = []
         for (let i = 0; i < COUNT_RANGE; i++) {
@@ -366,6 +417,17 @@ function SortingVisualier() {
                 }
             >
                 Merge sort
+            </button>
+            <button
+                type="button"
+                onClick={() =>
+                    heapSort(
+                        document.querySelectorAll('.bar'),
+                        document.querySelectorAll('.bar').length,
+                    )
+                }
+            >
+                Heap sort
             </button>
             <button type="button" onClick={selectionSort}>
                 Selection sort
