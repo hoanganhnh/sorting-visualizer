@@ -84,32 +84,94 @@ async function finishedSort(bars, ms) {
 const partition = async (arr, start, end) => {
     const poviotValues = getInnerContent(arr, end)
     let i = start - 1
-    await changeColorAnimation(arr, end, CORLOR_RUN)
+    // await changeColorAnimation(arr, end, CORLOR_RUN)
+    arr[end].style.backgroundColor = CORLOR_RUN
 
     for (let j = start; j < end; j++) {
         const currentBar = getInnerContent(arr, j)
 
-        await changeColorAnimation(arr, j, YELLOW_COLOR)
+        await changeColorAnimation(arr, j, YELLOW_COLOR, 50)
 
         if (currentBar <= poviotValues) {
             i++
             await Promise.all([swapHeight(arr, i, j), swapContent(arr, i, j)])
-            await changeColorAnimation(arr, i, ORANGE_COLOR)
+            await changeColorAnimation(arr, i, ORANGE_COLOR, 50)
 
             if (i !== j) {
-                await changeColorAnimation(arr, j, PINK_COLOR)
+                await changeColorAnimation(arr, j, PINK_COLOR, 50)
             }
         } else {
-            await changeColorAnimation(arr, j, PINK_COLOR)
+            await changeColorAnimation(arr, j, PINK_COLOR, 50)
         }
     }
     await Promise.all([swapHeight(arr, i + 1, end), swapContent(arr, i + 1, end)])
 
-    for (let k = 0; k < COUNT_RANGE; k++) {
-        await changeColorAnimation(arr, k, THIRST_COLOR)
+    for (let k = start; k <= end; k++) {
+        await changeColorAnimation(arr, k, THIRST_COLOR, 50)
     }
 
     return i + 1
+}
+// @FIXME
+const doMerge = (arr, start, middleIndex, end) => {
+    const n1 = middleIndex - start + 1
+    const n2 = end - middleIndex
+
+    const L = []
+    const R = []
+
+    for (let i = 0; i < n1; i++) {
+        L[i] = arr[start + i]
+    }
+
+    for (let i = 0; i < n2; i++) {
+        R[i] = arr[middleIndex + 1 + i]
+    }
+
+    let i = 0
+    let j = 0
+    let k = start
+
+    while (i < n1 && j < n2) {
+        // const x = L[i].style.height
+        // const y = R[j].style.height
+        // const x = getInnerContent(L, i)
+        // const y = getInnerContent(R, j)
+        if (L[i].style.height <= R[j].style.height) {
+            arr[k].style.height = L[i].style.height
+            arr[k].children[0].innerText = getInnerContent(L, i)
+            i++
+        } else {
+            arr[k].style.height = R[j].style.height
+            arr[k].children[0].innerText = getInnerContent(R, j)
+            j++
+        }
+        k++
+        // if (L[i] <= R[j]) {
+        //     arr[k] = L[i]
+        //     i++
+        // } else {
+        //     arr[k] = R[j]
+        //     j++
+        // }
+        // k++
+    }
+
+    while (i < n1) {
+        arr[k].style.height = L[i].style.height
+        arr[k].children[0].innerText = getInnerContent(L, i)
+        // arr[k] = L[i]
+        i++
+        k++
+    }
+
+    while (j < n2) {
+        arr[k].style.height = R[j].style.height
+        arr[k].children[0].innerText = getInnerContent(R, j)
+        // arr[k] = R[j]
+        j++
+        k++
+    }
 }
 
 function SortingVisualier() {
@@ -118,7 +180,7 @@ function SortingVisualier() {
     const quickSort = async (arr, start, end) => {
         if (isArraySorted(arr)) {
             for (let k = 0; k < arr.length; k++) {
-                await changeColorAnimation(arr, k, PRIMARY_COLOR, 100)
+                await changeColorAnimation(arr, k, PRIMARY_COLOR, 50)
             }
         }
         if (start < end) {
@@ -127,6 +189,17 @@ function SortingVisualier() {
                 quickSort(arr, start, position - 1),
                 quickSort(arr, position + 1, end),
             ])
+        }
+    }
+
+    // @FIXME
+    const mergeSort = (arr, start, end) => {
+        if (start < end) {
+            const middleIndex = Math.floor(start + (end - start) / 2)
+
+            mergeSort(arr, start, middleIndex)
+            mergeSort(arr, middleIndex + 1, end)
+            doMerge(arr, start, middleIndex, end)
         }
     }
 
@@ -139,7 +212,7 @@ function SortingVisualier() {
             await changeColorAnimation(bars, i, CORLOR_RUN)
 
             for (let j = i + 1; j < bars.length; j++) {
-                await changeColorAnimation(bars, j, SECONDARY_COLOR)
+                await changeColorAnimation(bars, j, SECONDARY_COLOR, 100)
 
                 const val1 = getInnerContent(bars, j)
                 const val2 = getInnerContent(bars, minIndex)
@@ -172,8 +245,8 @@ function SortingVisualier() {
                 const x = getInnerContent(bars, j)
                 const y = getInnerContent(bars, j + 1)
                 await Promise.all([
-                    await changeColorAnimation(bars, j, CORLOR_RUN),
-                    await changeColorAnimation(bars, j + 1, CORLOR_RUN),
+                    changeColorAnimation(bars, j, CORLOR_RUN),
+                    changeColorAnimation(bars, j + 1, CORLOR_RUN),
                 ])
                 if (y < x) {
                     await Promise.all([
@@ -182,8 +255,8 @@ function SortingVisualier() {
                     ])
                 }
                 await Promise.all([
-                    await changeColorAnimation(bars, j, PINK_COLOR),
-                    await changeColorAnimation(bars, j + 1, PINK_COLOR),
+                    changeColorAnimation(bars, j, PINK_COLOR),
+                    changeColorAnimation(bars, j + 1, PINK_COLOR),
                 ])
             }
             await changeColorAnimation(bars, bars.length - i - 1, THIRST_COLOR)
@@ -208,8 +281,8 @@ function SortingVisualier() {
             await changeColorAnimation(bars, i, CORLOR_RUN)
 
             while (j >= 0 && getInnerContent(bars, j) > key) {
-                bars[j].style.backgroundColor = 'darkblue'
-                // await changeColorAnimation(bars, j, CORLOR_RUN)
+                // bars[j].style.backgroundColor = 'darkblue'
+                await changeColorAnimation(bars, j, CORLOR_RUN, 100)
 
                 bars[j + 1].children[0].innerText = getInnerContent(bars, j)
                 bars[j + 1].style.height = bars[j].style.height
@@ -281,6 +354,18 @@ function SortingVisualier() {
                 }
             >
                 Quick Sort
+            </button>
+            <button
+                type="button"
+                onClick={() =>
+                    mergeSort(
+                        document.querySelectorAll('.bar'),
+                        0,
+                        document.querySelectorAll('.bar').length - 1,
+                    )
+                }
+            >
+                Merge sort
             </button>
             <button type="button" onClick={selectionSort}>
                 Selection sort
