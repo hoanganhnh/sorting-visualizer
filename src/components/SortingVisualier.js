@@ -59,8 +59,13 @@ async function changeColorAnimation(arr, i, color, ms = TIME_SPEED) {
     await sleep(ms)
 }
 
-function getInnerContent(arr, i) {
-    return Number(arr[i].children[0].innerText) || arr[i].childNodes[0].innerHTML
+function getValueBar(arr, i) {
+    const heightString = arr[i].style.height
+    /**
+     * @NOTE: slice "px"
+     */
+    const heightConvert = heightString.slice(0, heightString.length - 2)
+    return Number(heightConvert)
 }
 
 function isArraySorted(arr) {
@@ -82,20 +87,25 @@ async function finishedSort(bars, ms) {
 }
 
 const partition = async (arr, start, end) => {
-    const poviotValues = getInnerContent(arr, end)
+    const poviotValues = getValueBar(arr, end)
     let i = start - 1
     // await changeColorAnimation(arr, end, CORLOR_RUN)
     arr[end].style.backgroundColor = CORLOR_RUN
 
     for (let j = start; j < end; j++) {
-        const currentBar = getInnerContent(arr, j)
+        const currentBar = getValueBar(arr, j)
 
         await changeColorAnimation(arr, j, YELLOW_COLOR, 50)
 
         if (currentBar <= poviotValues) {
             i++
-            await Promise.all([swapHeight(arr, i, j), swapContent(arr, i, j)])
-            await changeColorAnimation(arr, i, ORANGE_COLOR, 50)
+            arr[i].style.backgroundColor = ORANGE_COLOR
+            await Promise.all([
+                swapHeight(arr, i, j),
+                swapContent(arr, i, j),
+                // changeColorAnimation(arr, i, ORANGE_COLOR, 50),
+            ])
+            // await changeColorAnimation(arr, i, ORANGE_COLOR, 50)
 
             if (i !== j) {
                 await changeColorAnimation(arr, j, PINK_COLOR, 50)
@@ -135,15 +145,15 @@ const doMerge = (arr, start, middleIndex, end) => {
     while (i < n1 && j < n2) {
         // const x = L[i].style.height
         // const y = R[j].style.height
-        // const x = getInnerContent(L, i)
-        // const y = getInnerContent(R, j)
-        if (L[i].style.height <= R[j].style.height) {
+        // const x = getValueBar(L, i)
+        // const y = getValueBar(R, j)
+        if (getValueBar(L, i) <= getValueBar(R, j)) {
             arr[k].style.height = L[i].style.height
-            arr[k].children[0].innerText = getInnerContent(L, i)
+            arr[k].children[0].innerText = getValueBar(L, i)
             i++
         } else {
             arr[k].style.height = R[j].style.height
-            arr[k].children[0].innerText = getInnerContent(R, j)
+            arr[k].children[0].innerText = getValueBar(R, j)
             j++
         }
         k++
@@ -159,7 +169,7 @@ const doMerge = (arr, start, middleIndex, end) => {
 
     while (i < n1) {
         arr[k].style.height = L[i].style.height
-        arr[k].children[0].innerText = getInnerContent(L, i)
+        arr[k].children[0].innerText = getValueBar(L, i)
         // arr[k] = L[i]
         i++
         k++
@@ -167,7 +177,7 @@ const doMerge = (arr, start, middleIndex, end) => {
 
     while (j < n2) {
         arr[k].style.height = R[j].style.height
-        arr[k].children[0].innerText = getInnerContent(R, j)
+        arr[k].children[0].innerText = getValueBar(R, j)
         // arr[k] = R[j]
         j++
         k++
@@ -214,8 +224,8 @@ function SortingVisualier() {
             for (let j = i + 1; j < bars.length; j++) {
                 await changeColorAnimation(bars, j, SECONDARY_COLOR, 100)
 
-                const val1 = getInnerContent(bars, j)
-                const val2 = getInnerContent(bars, minIndex)
+                const val1 = getValueBar(bars, j)
+                const val2 = getValueBar(bars, minIndex)
 
                 if (val1 < val2) {
                     if (minIndex !== i) {
@@ -242,8 +252,8 @@ function SortingVisualier() {
 
         for (let i = 0; i < bars.length - 1; i++) {
             for (let j = 0; j < bars.length - i - 1; j++) {
-                const x = getInnerContent(bars, j)
-                const y = getInnerContent(bars, j + 1)
+                const x = getValueBar(bars, j)
+                const y = getValueBar(bars, j + 1)
                 await Promise.all([
                     changeColorAnimation(bars, j, CORLOR_RUN),
                     changeColorAnimation(bars, j + 1, CORLOR_RUN),
@@ -273,18 +283,18 @@ function SortingVisualier() {
         await changeColorAnimation(bars, 0, THIRST_COLOR)
 
         for (let i = 1; i < bars.length; i++) {
-            const key = getInnerContent(bars, i)
+            const key = getValueBar(bars, i)
 
             const heightElement = bars[i].style.height
             let j = i - 1
 
             await changeColorAnimation(bars, i, CORLOR_RUN)
 
-            while (j >= 0 && getInnerContent(bars, j) > key) {
+            while (j >= 0 && getValueBar(bars, j) > key) {
                 // bars[j].style.backgroundColor = 'darkblue'
                 await changeColorAnimation(bars, j, CORLOR_RUN, 100)
 
-                bars[j + 1].children[0].innerText = getInnerContent(bars, j)
+                bars[j + 1].children[0].innerText = getValueBar(bars, j)
                 bars[j + 1].style.height = bars[j].style.height
 
                 j -= 1
@@ -315,19 +325,11 @@ function SortingVisualier() {
         const l = 2 * i + 1
         const r = 2 * i + 2
 
-        if (
-            l < n &&
-            Number(arr[l].childNodes[0].innerHTML) >
-                Number(arr[largest].childNodes[0].innerHTML)
-        ) {
+        if (l < n && getValueBar(arr, l) > getValueBar(arr, largest)) {
             largest = l
         }
 
-        if (
-            r < n &&
-            Number(arr[r].childNodes[0].innerHTML) >
-                Number(arr[largest].childNodes[0].innerHTML)
-        ) {
+        if (r < n && getValueBar(arr, r) > getValueBar(arr, largest)) {
             largest = r
         }
 
