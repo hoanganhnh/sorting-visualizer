@@ -3,7 +3,7 @@ import React, { useEffect, useState } from 'react'
 import './SortingVisualier.css'
 // import getMergeSortAnimations from '../algorithms/MergeSortAnimations'
 
-const TIME_SPEED = 100
+const TIME_SPEED = 50
 
 // This is the main color of the array bars.
 const PRIMARY_COLOR = 'turquoise'
@@ -55,6 +55,18 @@ async function swapContent(arr, i, j) {
     await sleep(TIME_SPEED)
 }
 
+function swapHeightNormal(arr, i, j) {
+    const temp = arr[i].style.height
+    arr[i].style.height = arr[j].style.height
+    arr[j].style.height = temp
+}
+
+function swapContentNormal(arr, i, j) {
+    const temp = arr[i].children[0].innerText
+    arr[i].children[0].innerText = arr[j].children[0].innerText
+    arr[j].children[0].innerText = temp
+}
+
 async function changeColorAnimation(arr, i, color, ms = TIME_SPEED) {
     arr[i].style.backgroundColor = color
     await sleep(ms)
@@ -72,8 +84,8 @@ function getValueBar(arr, i) {
 function isArraySorted(arr) {
     if (!arr.length) return false
     for (let i = 0; i < arr.length - 1; i++) {
-        const x = Number(arr[i].children[0].innerText)
-        const y = Number(arr[i + 1].children[0].innerText)
+        const x = getValueBar(arr, i)
+        const y = getValueBar(arr, i + 1)
         if (x > y) {
             return false
         }
@@ -90,35 +102,48 @@ async function finishedSort(bars, ms) {
 const partition = async (arr, start, end) => {
     const poviotValues = getValueBar(arr, end)
     let i = start - 1
-    // await changeColorAnimation(arr, end, CORLOR_RUN)
-    arr[end].style.backgroundColor = CORLOR_RUN
+    arr[end].style.backgroundColor = SECONDARY_COLOR
 
     for (let j = start; j < end; j++) {
         const currentBar = getValueBar(arr, j)
 
-        await changeColorAnimation(arr, j, YELLOW_COLOR, 50)
+        // await changeColorAnimation(arr, j, YELLOW_COLOR, 50)
+        arr[j].style.backgroundColor = YELLOW_COLOR
+        await sleep(TIME_SPEED)
 
         if (currentBar <= poviotValues) {
             i++
+
+            swapHeightNormal(arr, i, j)
+            swapContentNormal(arr, i, j)
             arr[i].style.backgroundColor = ORANGE_COLOR
-            await Promise.all([
-                swapHeight(arr, i, j),
-                swapContent(arr, i, j),
-                // changeColorAnimation(arr, i, ORANGE_COLOR, 50),
-            ])
-            // await changeColorAnimation(arr, i, ORANGE_COLOR, 50)
 
             if (i !== j) {
-                await changeColorAnimation(arr, j, PINK_COLOR, 50)
+                // await changeColorAnimation(arr, j, PINK_COLOR, 50)
+                arr[j].style.backgroundColor = ORANGE_COLOR
             }
+            // await changeColorAnimation(arr, i, ORANGE_COLOR, 50)
+            await sleep(TIME_SPEED)
         } else {
-            await changeColorAnimation(arr, j, PINK_COLOR, 50)
+            // await changeColorAnimation(arr, j, PINK_COLOR, 50)
+            arr[j].style.backgroundColor = PINK_COLOR
         }
     }
-    await Promise.all([swapHeight(arr, i + 1, end), swapContent(arr, i + 1, end)])
+    await sleep(TIME_SPEED)
 
-    for (let k = start; k <= end; k++) {
-        await changeColorAnimation(arr, k, THIRST_COLOR, 25)
+    swapHeightNormal(arr, i + 1, end)
+    swapContentNormal(arr, i + 1, end)
+
+    arr[end].style.background = PINK_COLOR
+    arr[i + 1].style.background = THIRST_COLOR
+
+    await sleep(TIME_SPEED)
+
+    for (let k = 0; k < arr.length; k++) {
+        // await changeColorAnimation(arr, k, THIRST_COLOR, 25)
+        if (arr[k].style.background !== THIRST_COLOR) {
+            arr[k].style.background = PRIMARY_COLOR
+        }
     }
 
     return i + 1
@@ -203,18 +228,26 @@ function SortingVisualier() {
     const [currentArray, setCurrentArray] = useState([])
 
     const quickSort = async (arr, start, end) => {
-        if (isArraySorted(arr)) {
-            for (let k = 0; k < arr.length; k++) {
-                await changeColorAnimation(arr, k, PRIMARY_COLOR, 50)
-            }
-        }
         if (start < end) {
             const position = await partition(arr, start, end)
             await Promise.all([
                 quickSort(arr, start, position - 1),
                 quickSort(arr, position + 1, end),
             ])
+        } else if (
+            start >= 0 &&
+            end >= 0 &&
+            start < arr.length &&
+            end < arr.length
+        ) {
+            arr[end].style.background = THIRST_COLOR
+            arr[start].style.background = THIRST_COLOR
         }
+        /*  if (isArraySorted(arr)) {
+            for (let k = 0; k < arr.length; k++) {
+                await changeColorAnimation(arr, k, PRIMARY_COLOR, 50)
+            }
+        } */
     }
 
     const mergeSort = async (arr, start, end) => {
@@ -224,9 +257,6 @@ function SortingVisualier() {
             await mergeSort(arr, start, middleIndex)
             await mergeSort(arr, middleIndex + 1, end)
             await doMerge(arr, start, middleIndex, end)
-        }
-        if (isArraySorted(arr)) {
-            await finishedSort(arr, 100)
         }
     }
 
@@ -328,7 +358,7 @@ function SortingVisualier() {
             // bars[i].style.backgroundColor = ' rgb(49, 226, 13)'
             await changeColorAnimation(bars, i, THIRST_COLOR)
             if (i === bars.length - 1) {
-                for (let k = 0; k <= i; k++) {
+                for (let k = i; k >= 0; k--) {
                     // bars[k].style.backgroundColor = THIRST_COLOR
                     await changeColorAnimation(bars, k, THIRST_COLOR, 100)
                 }
@@ -433,6 +463,10 @@ function SortingVisualier() {
             array.push(randomIntFromInterval(20, 400))
         }
         setCurrentArray(array)
+        const arr = document.querySelectorAll('.bar')
+        for (let k = 0; k < arr.length; k++) {
+            arr[k].style.backgroundColor = PRIMARY_COLOR
+        }
     }
 
     useEffect(() => {

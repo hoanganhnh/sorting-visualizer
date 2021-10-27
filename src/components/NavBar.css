@@ -1,0 +1,125 @@
+.nav-warraper {
+    display: flex;
+    align-items: center;
+    min-height: 54px;
+    margin-bottom: 30px;
+    padding: 0 16px;
+    background-color: #34495e;
+    color: #fff;
+}
+
+.logo-container {
+    flex: 1;
+}
+
+.nav-content {
+    flex: 4;
+    display: flex;
+    justify-content: space-evenly;
+    align-items: center;
+}
+
+.nav-item {
+    padding: 16px 20px;
+    font-size: 14px;
+    line-height: 23px;
+    font-weight: 700;
+    cursor: pointer;
+    transition: all 0.25s ease;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    position: relative;
+}
+
+.nav-item:hover {
+    color: #1abc9c;
+    background-color: transparent;
+}
+
+.dropdown-menu {
+    background-color: #2a3b4e;
+    padding: 3px 4px;
+    min-width: 100%;
+    margin-top: 4px;
+    border-radius: 6px;
+    position: absolute;
+    top: 52px;
+    left: 12px;
+    width: 172px;
+
+}
+
+.btn-active {
+    background-color: #1abc9c !important;
+    color: #ffffff !important;
+}
+
+.list-algorithm {
+    padding: 12px 8px 0 8px;
+}
+
+.algorithm {
+    color: #e1e4e7;
+    border-radius: 4px;
+    padding: 7px 9px;
+    font-weight: 500;
+    margin-bottom: 8px;
+    transition: all 0.25s ease;
+
+}
+
+.algorithm:hover {
+    color: #ffffff;
+    background-color: #1abc9c;
+}
+
+.caret {
+    border-top-color: #4b6075;
+    border-bottom-color: #4b6075;
+    vertical-align: middle;
+    border-top: 8px solid;
+    border-right: 6px solid transparent;
+    border-left: 6px solid transparent;
+    -webkit-transition: border-color 0.25s, color 0.25s;
+    transition: border-color 0.25s, color 0.25s;
+    margin-left: 8px;
+}
+
+.caret-animations {
+    transform: rotate(180deg);
+}
+
+
+.btn {
+    outline: none;
+    border: none;
+    cursor: pointer;
+    border-radius: 8px;
+    margin: 0 24px;
+    padding: 8px 24px;
+    font-size: 14px;
+    line-height: 23px;
+    font-weight: 700;
+    background-color: #1abc9c;
+    color: #ffffff;
+    transition: all 0.25s ease;
+}
+
+
+.btn:hover {
+    background-color: #16a588;
+    color: #fafafa;
+}
+
+
+@keyframes caret-animations {
+    0% {
+        transform: rotate(0deg);
+    }
+
+    25%  {transform: rotate(30deg);}
+    50%  {transform: rotate(60deg);}
+    75%  {transform: rotate(120deg);}
+    100% {transform: rotate(180deg);}
+}
