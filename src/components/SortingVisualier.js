@@ -1,8 +1,9 @@
 import React, { useEffect, useState } from 'react'
 
 import './SortingVisualier.css'
+// import getMergeSortAnimations from '../algorithms/MergeSortAnimations'
 
-const TIME_SPEED = 200
+const TIME_SPEED = 100
 
 // This is the main color of the array bars.
 const PRIMARY_COLOR = 'turquoise'
@@ -117,13 +118,14 @@ const partition = async (arr, start, end) => {
     await Promise.all([swapHeight(arr, i + 1, end), swapContent(arr, i + 1, end)])
 
     for (let k = start; k <= end; k++) {
-        await changeColorAnimation(arr, k, THIRST_COLOR, 50)
+        await changeColorAnimation(arr, k, THIRST_COLOR, 25)
     }
 
     return i + 1
 }
-// @FIXME
-const doMerge = (arr, start, middleIndex, end) => {
+const DELAY_TIME = 100
+
+const doMerge = async (arr, start, middleIndex, end) => {
     const n1 = middleIndex - start + 1
     const n2 = end - middleIndex
 
@@ -131,11 +133,15 @@ const doMerge = (arr, start, middleIndex, end) => {
     const R = []
 
     for (let i = 0; i < n1; i++) {
-        L[i] = arr[start + i]
+        await sleep(DELAY_TIME)
+        arr[start + i].style.backgroundColor = ORANGE_COLOR
+        L[i] = arr[start + i].style.height
     }
 
     for (let i = 0; i < n2; i++) {
-        R[i] = arr[middleIndex + 1 + i]
+        await sleep(DELAY_TIME)
+        arr[middleIndex + 1 + i].style.backgroundColor = YELLOW_COLOR
+        R[i] = arr[middleIndex + 1 + i].style.height
     }
 
     let i = 0
@@ -143,42 +149,51 @@ const doMerge = (arr, start, middleIndex, end) => {
     let k = start
 
     while (i < n1 && j < n2) {
-        // const x = L[i].style.height
-        // const y = R[j].style.height
-        // const x = getValueBar(L, i)
-        // const y = getValueBar(R, j)
-        if (getValueBar(L, i) <= getValueBar(R, j)) {
-            arr[k].style.height = L[i].style.height
-            arr[k].children[0].innerText = getValueBar(L, i)
+        if (parseInt(L[i], 10) <= parseInt(R[j], 10)) {
+            await sleep(DELAY_TIME)
+            if (n1 + n2 === arr.length) {
+                arr[k].style.backgroundColor = THIRST_COLOR
+            } else {
+                arr[k].style.backgroundColor = PINK_COLOR
+            }
+            arr[k].style.height = L[i]
+            arr[k].children[0].innerText = parseInt(L[i], 10)
             i++
         } else {
-            arr[k].style.height = R[j].style.height
-            arr[k].children[0].innerText = getValueBar(R, j)
+            if (n1 + n2 === arr.length) {
+                arr[k].style.backgroundColor = THIRST_COLOR
+            } else {
+                arr[k].style.backgroundColor = PINK_COLOR
+            }
+            arr[k].style.height = R[j]
+            arr[k].children[0].innerText = parseInt(R[j], 10)
             j++
         }
         k++
-        // if (L[i] <= R[j]) {
-        //     arr[k] = L[i]
-        //     i++
-        // } else {
-        //     arr[k] = R[j]
-        //     j++
-        // }
-        // k++
     }
 
     while (i < n1) {
-        arr[k].style.height = L[i].style.height
-        arr[k].children[0].innerText = getValueBar(L, i)
-        // arr[k] = L[i]
+        await sleep(DELAY_TIME)
+        if (n1 + n2 === arr.length) {
+            arr[k].style.backgroundColor = THIRST_COLOR
+        } else {
+            arr[k].style.backgroundColor = PINK_COLOR
+        }
+        arr[k].style.height = L[i]
+        arr[k].children[0].innerText = parseInt(L[i], 10)
         i++
         k++
     }
 
     while (j < n2) {
-        arr[k].style.height = R[j].style.height
-        arr[k].children[0].innerText = getValueBar(R, j)
-        // arr[k] = R[j]
+        await sleep(DELAY_TIME)
+        if (n1 + n2 === arr.length) {
+            arr[k].style.backgroundColor = THIRST_COLOR
+        } else {
+            arr[k].style.backgroundColor = PINK_COLOR
+        }
+        arr[k].style.height = R[j]
+        arr[k].children[0].innerText = parseInt(R[j], 10)
         j++
         k++
     }
@@ -202,14 +217,16 @@ function SortingVisualier() {
         }
     }
 
-    // @FIXME
-    const mergeSort = (arr, start, end) => {
+    const mergeSort = async (arr, start, end) => {
         if (start < end) {
-            const middleIndex = Math.floor(start + (end - start) / 2)
+            const middleIndex = start + Math.floor((end - start) / 2)
 
-            mergeSort(arr, start, middleIndex)
-            mergeSort(arr, middleIndex + 1, end)
-            doMerge(arr, start, middleIndex, end)
+            await mergeSort(arr, start, middleIndex)
+            await mergeSort(arr, middleIndex + 1, end)
+            await doMerge(arr, start, middleIndex, end)
+        }
+        if (isArraySorted(arr)) {
+            await finishedSort(arr, 100)
         }
     }
 
@@ -345,7 +362,10 @@ function SortingVisualier() {
         arr[largest].style.backgroundColor = SECONDARY_COLOR
     }
 
-    const heapSort = async (arr, n) => {
+    const heapSort = async () => {
+        const arr = document.querySelectorAll('.bar')
+        const n = arr.length
+
         for (let i = Math.floor(n / 2) - 1; i >= 0; i--) {
             await changeColorAnimation(arr, i, PINK_COLOR)
             await Promise.all([heapify(arr, n, i)])
@@ -464,15 +484,7 @@ function SortingVisualier() {
             >
                 Merge sort
             </button>
-            <button
-                type="button"
-                onClick={() =>
-                    heapSort(
-                        document.querySelectorAll('.bar'),
-                        document.querySelectorAll('.bar').length,
-                    )
-                }
-            >
+            <button type="button" onClick={heapSort}>
                 Heap sort
             </button>
             <button type="button" onClick={selectionSort}>
