@@ -1,0 +1,35 @@
+.footer-warraper {
+    height: 54px;
+    padding: 0 16px;
+    background-color: #34495e;
+    color: #ccc;
+    position: fixed;
+    bottom: 0;
+    right: 0;
+    left: 0;
+}
+
+.container {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    max-width: 1200px;
+    margin: 0 auto;
+    height: 100%;
+}
+
+.copyright-text {
+    flex: 1;
+}
+
+.group-icon {
+    flex: 1;
+    display: flex;
+    justify-content: flex-end;
+}
+
+.github-icon {
+    width: 20px;
+    height: 20px;
+    object-fit: cover;
+}
