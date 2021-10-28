@@ -1,22 +1,9 @@
-import React, { useState, useEffect } from 'react'
+import React, { useState } from 'react'
 
+import { useClickOutside } from '../hooks'
 import ChartIcon from '../assets/img/chart.svg'
 
 import './NavBar.css'
-
-const useClickOutside = (ref, callback) => {
-    const handleClick = (e) => {
-        if (ref.current && !ref.current.contains(e.target)) {
-            callback()
-        }
-    }
-    React.useEffect(() => {
-        document.addEventListener('click', handleClick)
-        return () => {
-            document.removeEventListener('click', handleClick)
-        }
-    })
-}
 
 function NavBar() {
     const [showDropdown, setShowDropdown] = useState(false)

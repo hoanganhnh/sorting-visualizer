@@ -1,7 +1,7 @@
 import React, { useEffect, useState } from 'react'
 
+import { randomIntFromInterval, sleep } from '../helpers'
 import './SortingVisualier.css'
-// import getMergeSortAnimations from '../algorithms/MergeSortAnimations'
 
 const TIME_SPEED = 50
 
@@ -21,10 +21,6 @@ const PINK_COLOR = 'pink'
 
 const COUNT_RANGE = 20
 
-function randomIntFromInterval(min, max) {
-    return Math.floor(Math.random() * (max - min) + min)
-}
-
 /**
  * @fn
  * @TODO
@@ -36,10 +32,6 @@ function randomIntFromInterval(min, max) {
  * ? question
  * * Important
  */
-
-function sleep(ms) {
-    return new Promise((resolve) => setTimeout(resolve, ms))
-}
 
 async function swapHeight(arr, i, j) {
     const temp = arr[i].style.height
@@ -243,11 +235,6 @@ function SortingVisualier() {
             arr[end].style.background = THIRST_COLOR
             arr[start].style.background = THIRST_COLOR
         }
-        /*  if (isArraySorted(arr)) {
-            for (let k = 0; k < arr.length; k++) {
-                await changeColorAnimation(arr, k, PRIMARY_COLOR, 50)
-            }
-        } */
     }
 
     const mergeSort = async (arr, start, end) => {
