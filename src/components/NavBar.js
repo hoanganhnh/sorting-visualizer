@@ -5,6 +5,37 @@ import ChartIcon from '../assets/img/chart.svg'
 
 import './NavBar.css'
 
+const LIST_ALGORITHM = [
+    {
+        id: 1,
+        type: 'Quick Sort',
+    },
+    {
+        id: 2,
+        type: 'Heap Sort',
+    },
+    {
+        id: 3,
+        type: 'Selection Sort',
+    },
+    {
+        id: 4,
+        type: 'Bubble Sort',
+    },
+    {
+        id: 5,
+        type: 'Heap Sort',
+    },
+    {
+        id: 6,
+        type: 'Insertion Sort',
+    },
+    {
+        id: 7,
+        type: 'Shell Sort',
+    },
+]
+
 function NavBar() {
     const [showDropdown, setShowDropdown] = useState(false)
     const [showSpeed, setShowSpeed] = useState(false)
@@ -58,12 +89,11 @@ function NavBar() {
                         {showDropdown && (
                             <div className="dropdown-menu">
                                 <ul className="list-algorithm">
-                                    <li className="algorithm">Quick Sort</li>
-                                    <li className="algorithm">Heap sort</li>
-                                    <li className="algorithm">Selection sort</li>
-                                    <li className="algorithm">Bubble sort</li>
-                                    <li className="algorithm">Insertion sort</li>
-                                    <li className="algorithm">Shell sort</li>
+                                    {LIST_ALGORITHM.map((algorithm) => (
+                                        <li key={algorithm.id} className="algorithm">
+                                            {algorithm.type}
+                                        </li>
+                                    ))}
                                 </ul>
                             </div>
                         )}

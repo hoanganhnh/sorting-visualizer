@@ -1,95 +1,28 @@
 import React, { useEffect, useState } from 'react'
 
-import { randomIntFromInterval, sleep } from '../helpers'
+import {
+    randomIntFromInterval,
+    sleep,
+    changeColorAnimation,
+    finishedSort,
+    getValueBar,
+    swapHeightNormal,
+    swapContentNormal,
+    swapHeight,
+    swapContent,
+} from '../helpers'
+import {
+    TIME_SPEED,
+    PRIMARY_COLOR,
+    SECONDARY_COLOR,
+    THIRST_COLOR,
+    CORLOR_RUN,
+    YELLOW_COLOR,
+    ORANGE_COLOR,
+    PINK_COLOR,
+    COUNT_RANGE,
+} from '../constants'
 import './SortingVisualier.css'
-
-const TIME_SPEED = 50
-
-// This is the main color of the array bars.
-const PRIMARY_COLOR = 'turquoise'
-
-// This is the color of array bars that are being compared throughout the animations.
-const SECONDARY_COLOR = '#d61d1dcc'
-
-const THIRST_COLOR = 'rgb(49, 226, 13)'
-
-const CORLOR_RUN = 'rgb(80, 80, 174)'
-
-const YELLOW_COLOR = 'yellow'
-const ORANGE_COLOR = 'orange'
-const PINK_COLOR = 'pink'
-
-const COUNT_RANGE = 20
-
-/**
- * @fn
- * @TODO
- * @FIXME
- * @BUG
- * @OPTIMIZE
- * @NOTE
- * !Dangerous
- * ? question
- * * Important
- */
-
-async function swapHeight(arr, i, j) {
-    const temp = arr[i].style.height
-    arr[i].style.height = arr[j].style.height
-    arr[j].style.height = temp
-    await sleep(TIME_SPEED)
-}
-
-async function swapContent(arr, i, j) {
-    const temp = arr[i].children[0].innerText
-    arr[i].children[0].innerText = arr[j].children[0].innerText
-    arr[j].children[0].innerText = temp
-    await sleep(TIME_SPEED)
-}
-
-function swapHeightNormal(arr, i, j) {
-    const temp = arr[i].style.height
-    arr[i].style.height = arr[j].style.height
-    arr[j].style.height = temp
-}
-
-function swapContentNormal(arr, i, j) {
-    const temp = arr[i].children[0].innerText
-    arr[i].children[0].innerText = arr[j].children[0].innerText
-    arr[j].children[0].innerText = temp
-}
-
-async function changeColorAnimation(arr, i, color, ms = TIME_SPEED) {
-    arr[i].style.backgroundColor = color
-    await sleep(ms)
-}
-
-function getValueBar(arr, i) {
-    const heightString = arr[i].style.height
-    /**
-     * @NOTE: slice "px"
-     */
-    const heightConvert = heightString.slice(0, heightString.length - 2)
-    return Number(heightConvert)
-}
-
-function isArraySorted(arr) {
-    if (!arr.length) return false
-    for (let i = 0; i < arr.length - 1; i++) {
-        const x = getValueBar(arr, i)
-        const y = getValueBar(arr, i + 1)
-        if (x > y) {
-            return false
-        }
-    }
-    return true
-}
-
-async function finishedSort(bars, ms) {
-    for (let k = 0; k < bars.length; k++) {
-        await changeColorAnimation(bars, k, PRIMARY_COLOR, ms)
-    }
-}
 
 const partition = async (arr, start, end) => {
     const poviotValues = getValueBar(arr, end)
@@ -99,7 +32,6 @@ const partition = async (arr, start, end) => {
     for (let j = start; j < end; j++) {
         const currentBar = getValueBar(arr, j)
 
-        // await changeColorAnimation(arr, j, YELLOW_COLOR, 50)
         arr[j].style.backgroundColor = YELLOW_COLOR
         await sleep(TIME_SPEED)
 
@@ -111,13 +43,10 @@ const partition = async (arr, start, end) => {
             arr[i].style.backgroundColor = ORANGE_COLOR
 
             if (i !== j) {
-                // await changeColorAnimation(arr, j, PINK_COLOR, 50)
                 arr[j].style.backgroundColor = ORANGE_COLOR
             }
-            // await changeColorAnimation(arr, i, ORANGE_COLOR, 50)
             await sleep(TIME_SPEED)
         } else {
-            // await changeColorAnimation(arr, j, PINK_COLOR, 50)
             arr[j].style.backgroundColor = PINK_COLOR
         }
     }
@@ -132,7 +61,6 @@ const partition = async (arr, start, end) => {
     await sleep(TIME_SPEED)
 
     for (let k = 0; k < arr.length; k++) {
-        // await changeColorAnimation(arr, k, THIRST_COLOR, 25)
         if (arr[k].style.background !== THIRST_COLOR) {
             arr[k].style.background = PRIMARY_COLOR
         }
@@ -140,7 +68,6 @@ const partition = async (arr, start, end) => {
 
     return i + 1
 }
-const DELAY_TIME = 100
 
 const doMerge = async (arr, start, middleIndex, end) => {
     const n1 = middleIndex - start + 1
@@ -150,13 +77,13 @@ const doMerge = async (arr, start, middleIndex, end) => {
     const R = []
 
     for (let i = 0; i < n1; i++) {
-        await sleep(DELAY_TIME)
+        await sleep(TIME_SPEED)
         arr[start + i].style.backgroundColor = ORANGE_COLOR
         L[i] = arr[start + i].style.height
     }
 
     for (let i = 0; i < n2; i++) {
-        await sleep(DELAY_TIME)
+        await sleep(TIME_SPEED)
         arr[middleIndex + 1 + i].style.backgroundColor = YELLOW_COLOR
         R[i] = arr[middleIndex + 1 + i].style.height
     }
@@ -167,7 +94,7 @@ const doMerge = async (arr, start, middleIndex, end) => {
 
     while (i < n1 && j < n2) {
         if (parseInt(L[i], 10) <= parseInt(R[j], 10)) {
-            await sleep(DELAY_TIME)
+            await sleep(TIME_SPEED)
             if (n1 + n2 === arr.length) {
                 arr[k].style.backgroundColor = THIRST_COLOR
             } else {
@@ -190,7 +117,7 @@ const doMerge = async (arr, start, middleIndex, end) => {
     }
 
     while (i < n1) {
-        await sleep(DELAY_TIME)
+        await sleep(TIME_SPEED)
         if (n1 + n2 === arr.length) {
             arr[k].style.backgroundColor = THIRST_COLOR
         } else {
@@ -203,7 +130,7 @@ const doMerge = async (arr, start, middleIndex, end) => {
     }
 
     while (j < n2) {
-        await sleep(DELAY_TIME)
+        await sleep(TIME_SPEED)
         if (n1 + n2 === arr.length) {
             arr[k].style.backgroundColor = THIRST_COLOR
         } else {
@@ -325,7 +252,6 @@ function SortingVisualier() {
             await changeColorAnimation(bars, i, CORLOR_RUN)
 
             while (j >= 0 && getValueBar(bars, j) > key) {
-                // bars[j].style.backgroundColor = 'darkblue'
                 await changeColorAnimation(bars, j, CORLOR_RUN, 100)
 
                 bars[j + 1].children[0].innerText = getValueBar(bars, j)
@@ -341,12 +267,9 @@ function SortingVisualier() {
             bars[j + 1].style.height = heightElement
             bars[j + 1].childNodes[0].innerHTML = key
 
-            // await sleep(500)
-            // bars[i].style.backgroundColor = ' rgb(49, 226, 13)'
             await changeColorAnimation(bars, i, THIRST_COLOR)
             if (i === bars.length - 1) {
                 for (let k = i; k >= 0; k--) {
-                    // bars[k].style.backgroundColor = THIRST_COLOR
                     await changeColorAnimation(bars, k, THIRST_COLOR, 100)
                 }
             }
