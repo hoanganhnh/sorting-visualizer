@@ -1,4 +1,4 @@
-import React, { useState } from 'react'
+import React, { useState, useEffect } from 'react'
 import { useDispatch } from 'react-redux'
 
 import { useClickOutside } from '../hooks'
@@ -14,7 +14,7 @@ import {
 } from '../algorithms'
 
 import './NavBar.css'
-import { COUNT_RANGE, PRIMARY_COLOR } from '../constants'
+import { PRIMARY_COLOR } from '../constants'
 import { randomIntFromInterval } from '../helpers'
 import { updateArray } from '../redux/slices/setCurrentArray'
 
@@ -125,8 +125,8 @@ function NavBar() {
     const resetArray = () => {
         setTypeAlgorithm('')
         const array = []
-        for (let i = 0; i < COUNT_RANGE; i++) {
-            array.push(randomIntFromInterval(20, 400))
+        for (let i = 0; i < Number(value) * 2; i++) {
+            array.push(randomIntFromInterval(20, 500))
         }
         dispatch(updateArray(array))
         const arr = document.querySelectorAll('.bar')
@@ -136,6 +136,18 @@ function NavBar() {
     }
     useClickOutside(dropdownRef, () => setShowDropdown(false))
     useClickOutside(speedRef, () => setShowSpeed(false))
+
+    useEffect(() => {
+        const array = []
+        for (let i = 0; i < Number(value) * 2; i++) {
+            array.push(randomIntFromInterval(20, 500))
+        }
+        const arr = document.querySelectorAll('.bar')
+        for (let k = 0; k < arr.length; k++) {
+            arr[k].style.backgroundColor = PRIMARY_COLOR
+        }
+        dispatch(updateArray(array))
+    }, [value])
     return (
         <div className="nav-warraper">
             <div className="container">

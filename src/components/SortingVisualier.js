@@ -13,6 +13,12 @@ function SortingVisualier() {
         setCurrentArray(amountArray)
     }, [amountArray])
 
+    const numWidth = Math.floor(
+        document.body.clientWidth / (currentArray.length * 3),
+    )
+    const width = `${numWidth * 2}px`
+    const color = numWidth > 20 ? 'white' : 'transparent'
+
     return (
         <>
             <div className="data-container">
@@ -25,9 +31,10 @@ function SortingVisualier() {
                             backgroundColor: PRIMARY_COLOR,
                             height: `${value}px`,
                             margin: '0 0 0 2px',
+                            width,
                         }}
                     >
-                        <span>{value}</span>
+                        <span style={{ color }}>{value}</span>
                     </div>
                 ))}
             </div>
