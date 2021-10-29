@@ -2,37 +2,53 @@ import React, { useState } from 'react'
 
 import { useClickOutside } from '../hooks'
 import ChartIcon from '../assets/img/chart.svg'
+import {
+    insertionSort,
+    bubbleSort,
+    heapSort,
+    shellSort,
+    selectionSort,
+    quickSort,
+    mergeSort,
+} from '../algorithms'
 
 import './NavBar.css'
 
+const QUICK_SORT = 'Quick Sort'
+const HEAP_SORT = 'Heap Sort'
+const SELECT_SORT = 'Select Sort'
+const BUBBLE_SORT = 'Bubble Sort'
+const MERGED_SORT = 'Merged Sort'
+const INSERT_SORT = 'Insert Sort'
+const SHELL_SORT = 'Shell Sort'
 const LIST_ALGORITHM = [
     {
         id: 1,
-        type: 'Quick Sort',
+        type: QUICK_SORT,
     },
     {
         id: 2,
-        type: 'Heap Sort',
+        type: MERGED_SORT,
     },
     {
         id: 3,
-        type: 'Selection Sort',
+        type: SELECT_SORT,
     },
     {
         id: 4,
-        type: 'Bubble Sort',
+        type: BUBBLE_SORT,
     },
     {
         id: 5,
-        type: 'Heap Sort',
+        type: HEAP_SORT,
     },
     {
         id: 6,
-        type: 'Insertion Sort',
+        type: INSERT_SORT,
     },
     {
         id: 7,
-        type: 'Shell Sort',
+        type: SHELL_SORT,
     },
 ]
 
@@ -40,6 +56,7 @@ function NavBar() {
     const [showDropdown, setShowDropdown] = useState(false)
     const [showSpeed, setShowSpeed] = useState(false)
     const [value, setValue] = useState(10)
+    const [typeAlgorithm, setTypeAlgorithm] = useState('')
 
     const dropdownRef = React.useRef()
     const speedRef = React.useRef()
@@ -49,6 +66,55 @@ function NavBar() {
     }
     const handleShowSpeed = () => {
         setShowSpeed(!showSpeed)
+    }
+    const handleChooseAlgorithm = (type) => {
+        if (type === QUICK_SORT) {
+            setTypeAlgorithm(QUICK_SORT)
+        }
+        if (type === MERGED_SORT) {
+            setTypeAlgorithm(MERGED_SORT)
+        }
+        if (type === BUBBLE_SORT) {
+            setTypeAlgorithm(BUBBLE_SORT)
+        }
+        if (type === HEAP_SORT) {
+            setTypeAlgorithm(HEAP_SORT)
+        }
+        if (type === INSERT_SORT) {
+            setTypeAlgorithm(INSERT_SORT)
+        }
+        if (type === SELECT_SORT) {
+            setTypeAlgorithm(SELECT_SORT)
+        }
+        if (type === SHELL_SORT) {
+            setTypeAlgorithm(SHELL_SORT)
+        }
+    }
+    const actionSort = async (type) => {
+        const bars = document.querySelectorAll('.bar')
+        const size = bars.length
+        if (type === INSERT_SORT) {
+            insertionSort()
+        }
+        if (type === SELECT_SORT) {
+            selectionSort()
+        }
+        if (type === SHELL_SORT) {
+            shellSort()
+        }
+        if (type === HEAP_SORT) {
+            heapSort()
+        }
+        if (type === BUBBLE_SORT) {
+            bubbleSort()
+        }
+        if (type === QUICK_SORT) {
+            quickSort(bars, 0, size - 1)
+        }
+        if (type === MERGED_SORT) {
+            mergeSort(bars, 0, size - 1)
+        }
+        return undefined
     }
     useClickOutside(dropdownRef, () => setShowDropdown(false))
     useClickOutside(speedRef, () => setShowSpeed(false))
@@ -80,7 +146,7 @@ function NavBar() {
                         onClick={handleShowDropdown}
                         ref={dropdownRef}
                     >
-                        Algorithms
+                        {!typeAlgorithm ? 'Algorithms' : typeAlgorithm}
                         <span
                             className={`caret ${
                                 showDropdown ? 'caret-animations' : ''
@@ -90,7 +156,14 @@ function NavBar() {
                             <div className="dropdown-menu">
                                 <ul className="list-algorithm">
                                     {LIST_ALGORITHM.map((algorithm) => (
-                                        <li key={algorithm.id} className="algorithm">
+                                        <li
+                                            key={algorithm.id}
+                                            className="algorithm"
+                                            aria-hidden="true"
+                                            onClick={() =>
+                                                handleChooseAlgorithm(algorithm.type)
+                                            }
+                                        >
                                             {algorithm.type}
                                         </li>
                                     ))}
@@ -98,7 +171,11 @@ function NavBar() {
                             </div>
                         )}
                     </div>
-                    <button type="button" className="btn">
+                    <button
+                        type="button"
+                        className="btn"
+                        onClick={() => actionSort(typeAlgorithm)}
+                    >
                         Sort
                     </button>
                     <div
