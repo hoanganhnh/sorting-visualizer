@@ -12,35 +12,35 @@ import {
     swapHeight,
 } from '../helpers'
 
-const selectionSort = async () => {
+const selectionSort = async (time) => {
     const bars = document.querySelectorAll('.bar')
     let minIndex = 0
 
     for (let i = 0; i < bars.length; i++) {
         minIndex = i
-        await changeColorAnimation(bars, i, CORLOR_RUN)
+        await changeColorAnimation(bars, i, CORLOR_RUN, time)
 
         for (let j = i + 1; j < bars.length; j++) {
-            await changeColorAnimation(bars, j, SECONDARY_COLOR, 100)
+            await changeColorAnimation(bars, j, SECONDARY_COLOR, time)
 
             const val1 = getValueBar(bars, j)
             const val2 = getValueBar(bars, minIndex)
 
             if (val1 < val2) {
                 if (minIndex !== i) {
-                    await changeColorAnimation(bars, minIndex, PRIMARY_COLOR)
+                    await changeColorAnimation(bars, minIndex, PRIMARY_COLOR, time)
                 }
                 minIndex = j
             } else {
-                await changeColorAnimation(bars, j, PRIMARY_COLOR)
+                await changeColorAnimation(bars, j, PRIMARY_COLOR, time)
             }
         }
 
         await Promise.all([
-            swapHeight(bars, minIndex, i),
-            swapContent(bars, minIndex, i),
-            changeColorAnimation(bars, minIndex, PRIMARY_COLOR),
-            changeColorAnimation(bars, i, THIRST_COLOR),
+            swapHeight(bars, minIndex, i, time),
+            swapContent(bars, minIndex, i, time),
+            changeColorAnimation(bars, minIndex, PRIMARY_COLOR, time),
+            changeColorAnimation(bars, i, THIRST_COLOR, time),
         ])
     }
     await finishedSort(bars, 100)

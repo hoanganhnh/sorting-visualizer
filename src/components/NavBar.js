@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from 'react'
-import { useDispatch } from 'react-redux'
+import { useDispatch, useSelector } from 'react-redux'
 
 import { useClickOutside } from '../hooks'
 import ChartIcon from '../assets/img/chart.svg'
@@ -13,54 +13,42 @@ import {
     mergeSort,
 } from '../algorithms'
 
-import './NavBar.css'
-import { PRIMARY_COLOR } from '../constants'
+import {
+    PRIMARY_COLOR,
+    QUICK_SORT,
+    HEAP_SORT,
+    SELECT_SORT,
+    BUBBLE_SORT,
+    MERGED_SORT,
+    INSERT_SORT,
+    SHELL_SORT,
+    LIST_ALGORITHM,
+    SPEED_SLOW,
+    SPEED_NORMAL,
+    SPEED_MEDIUM,
+    SPEED_FAST,
+    SPEEDS,
+    TIME_SPEED_SLOW,
+    TIME_SPEED_NORMAL,
+    TIME_SPEED_MEDIUM,
+    TIME_SPEED_FAST,
+} from '../constants'
 import { randomIntFromInterval } from '../helpers'
 import { updateArray } from '../redux/slices/setCurrentArray'
-
-const QUICK_SORT = 'Quick Sort'
-const HEAP_SORT = 'Heap Sort'
-const SELECT_SORT = 'Select Sort'
-const BUBBLE_SORT = 'Bubble Sort'
-const MERGED_SORT = 'Merged Sort'
-const INSERT_SORT = 'Insert Sort'
-const SHELL_SORT = 'Shell Sort'
-const LIST_ALGORITHM = [
-    {
-        id: 1,
-        type: QUICK_SORT,
-    },
-    {
-        id: 2,
-        type: MERGED_SORT,
-    },
-    {
-        id: 3,
-        type: SELECT_SORT,
-    },
-    {
-        id: 4,
-        type: BUBBLE_SORT,
-    },
-    {
-        id: 5,
-        type: HEAP_SORT,
-    },
-    {
-        id: 6,
-        type: INSERT_SORT,
-    },
-    {
-        id: 7,
-        type: SHELL_SORT,
-    },
-]
+import {
+    updateTime,
+    setCurrentTimeSpeedSelector,
+} from '../redux/slices/setCurrentTimeSpeed'
+import './NavBar.css'
 
 function NavBar() {
     const [showDropdown, setShowDropdown] = useState(false)
     const [showSpeed, setShowSpeed] = useState(false)
     const [value, setValue] = useState(10)
     const [typeAlgorithm, setTypeAlgorithm] = useState('')
+    const [typeSpeed, setTypeSpeed] = useState('')
+
+    const currentTimeSpeed = useSelector(setCurrentTimeSpeedSelector)
 
     const dispatch = useDispatch()
 
@@ -96,34 +84,60 @@ function NavBar() {
             setTypeAlgorithm(SHELL_SORT)
         }
     }
+    const handleChooseSpeed = (type) => {
+        if (type === SPEED_SLOW) {
+            setTypeSpeed(SPEED_SLOW)
+            dispatch(updateTime(TIME_SPEED_SLOW))
+        }
+        if (type === SPEED_NORMAL) {
+            setTypeSpeed(SPEED_NORMAL)
+            dispatch(updateTime(TIME_SPEED_NORMAL))
+        }
+        if (type === SPEED_MEDIUM) {
+            setTypeSpeed(SPEED_MEDIUM)
+            dispatch(updateTime(TIME_SPEED_MEDIUM))
+        }
+        if (type === SPEED_FAST) {
+            setTypeSpeed(SPEED_FAST)
+            dispatch(updateTime(TIME_SPEED_FAST))
+        }
+    }
+    const onResetColorBar = () => {
+        const arr = document.querySelectorAll('.bar')
+        for (let k = 0; k < arr.length; k++) {
+            arr[k].style.backgroundColor = PRIMARY_COLOR
+        }
+    }
     const actionSort = async (type) => {
+        onResetColorBar()
         const bars = document.querySelectorAll('.bar')
         const size = bars.length
         if (type === INSERT_SORT) {
-            insertionSort()
+            insertionSort(currentTimeSpeed)
         }
         if (type === SELECT_SORT) {
-            selectionSort()
+            selectionSort(currentTimeSpeed)
         }
         if (type === SHELL_SORT) {
-            shellSort()
+            shellSort(currentTimeSpeed)
         }
         if (type === HEAP_SORT) {
-            heapSort()
+            heapSort(currentTimeSpeed)
         }
         if (type === BUBBLE_SORT) {
-            bubbleSort()
+            bubbleSort(currentTimeSpeed)
         }
         if (type === QUICK_SORT) {
-            quickSort(bars, 0, size - 1)
+            quickSort(bars, 0, size - 1, currentTimeSpeed)
         }
         if (type === MERGED_SORT) {
-            mergeSort(bars, 0, size - 1)
+            mergeSort(bars, 0, size - 1, currentTimeSpeed)
         }
         return undefined
     }
     const resetArray = () => {
         setTypeAlgorithm('')
+        setTypeSpeed('')
         const array = []
         for (let i = 0; i < Number(value) * 2; i++) {
             array.push(randomIntFromInterval(20, 500))
@@ -142,10 +156,7 @@ function NavBar() {
         for (let i = 0; i < Number(value) * 2; i++) {
             array.push(randomIntFromInterval(20, 500))
         }
-        const arr = document.querySelectorAll('.bar')
-        for (let k = 0; k < arr.length; k++) {
-            arr[k].style.backgroundColor = PRIMARY_COLOR
-        }
+        onResetColorBar()
         dispatch(updateArray(array))
     }, [value])
     return (
@@ -221,7 +232,7 @@ function NavBar() {
                         onClick={handleShowSpeed}
                         ref={speedRef}
                     >
-                        Speed
+                        {!typeSpeed ? 'Speed' : typeSpeed}
                         <span
                             className={`caret ${
                                 showSpeed ? 'caret-animations' : ''
@@ -230,10 +241,18 @@ function NavBar() {
                         {showSpeed && (
                             <div className="dropdown-menu">
                                 <ul className="list-algorithm">
-                                    <li className="algorithm">Slow</li>
-                                    <li className="algorithm">Normal</li>
-                                    <li className="algorithm">Medium</li>
-                                    <li className="algorithm">Fast</li>
+                                    {SPEEDS.map((speed) => (
+                                        <li
+                                            key={speed.id}
+                                            className="algorithm"
+                                            aria-hidden="true"
+                                            onClick={() =>
+                                                handleChooseSpeed(speed.type)
+                                            }
+                                        >
+                                            {speed.type}
+                                        </li>
+                                    ))}
                                 </ul>
                             </div>
                         )}

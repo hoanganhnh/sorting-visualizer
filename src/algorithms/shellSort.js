@@ -7,7 +7,7 @@ import {
 } from '../constants'
 import { changeColorAnimation, finishedSort, getValueBar } from '../helpers'
 
-const shellSort = async () => {
+const shellSort = async (time) => {
     const bars = document.querySelectorAll('.bar')
 
     const size = bars.length
@@ -19,33 +19,27 @@ const shellSort = async () => {
             const temp1 = bars[j].style.height
             const temp2 = getValueBar(bars, j)
 
-            await changeColorAnimation(bars, j, CORLOR_RUN, 100)
+            await changeColorAnimation(bars, j, CORLOR_RUN, time)
 
             for (k = j; k >= i && getValueBar(bars, k - i) > temp; k -= i) {
                 bars[k].style.height = bars[k - i].style.height
 
                 bars[k].childNodes[0].innerText = bars[k - i].childNodes[0].innerText
-                await changeColorAnimation(bars, k, ORANGE_COLOR, 100)
+                await changeColorAnimation(bars, k, ORANGE_COLOR, time)
             }
             bars[j].style.backgroundColor = PINK_COLOR
-            // await changeColorAnimation(bars, j, PINK_COLOR, 100)
-            // await changeColorAnimation(bars, k, PINK_COLOR, 100)
 
             bars[k].style.height = temp1
             bars[k].childNodes[0].innerText = temp2
 
-            // bars[j].style.backgroundColor = 'rgb(0, 183, 255)'
-            // bars[k].style.backgroundColor = 'rgb(0, 183, 255)'
-
             await Promise.all([
-                changeColorAnimation(bars, j, PINK_COLOR, 50),
-                changeColorAnimation(bars, k, PRIMARY_COLOR, 50),
+                changeColorAnimation(bars, j, PINK_COLOR, time),
+                changeColorAnimation(bars, k, PRIMARY_COLOR, time),
             ])
         }
     }
     for (let x = 0; x < size; x++) {
-        // bars[x].style.backgroundColor = THIRST_COLOR
-        await changeColorAnimation(bars, x, THIRST_COLOR, 50)
+        await changeColorAnimation(bars, x, THIRST_COLOR, time)
     }
     await finishedSort(bars, 100)
 }

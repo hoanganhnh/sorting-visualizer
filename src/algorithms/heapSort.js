@@ -12,7 +12,7 @@ import {
     swapHeight,
 } from '../helpers'
 
-const heapify = async (arr, n, i) => {
+const heapify = async (arr, n, i, time) => {
     let largest = i
     const l = 2 * i + 1
     const r = 2 * i + 2
@@ -27,31 +27,31 @@ const heapify = async (arr, n, i) => {
 
     if (largest !== i) {
         await Promise.all([
-            changeColorAnimation(arr, i, ORANGE_COLOR),
-            swapHeight(arr, i, largest),
-            swapContent(arr, i, largest),
-            heapify(arr, n, largest),
+            changeColorAnimation(arr, i, ORANGE_COLOR, time),
+            swapHeight(arr, i, largest, time),
+            swapContent(arr, i, largest, time),
+            heapify(arr, n, largest, time),
         ])
     }
 
     arr[largest].style.backgroundColor = SECONDARY_COLOR
 }
 
-const heapSort = async () => {
+const heapSort = async (time) => {
     const arr = document.querySelectorAll('.bar')
     const n = arr.length
 
     for (let i = Math.floor(n / 2) - 1; i >= 0; i--) {
-        await changeColorAnimation(arr, i, PINK_COLOR)
-        await Promise.all([heapify(arr, n, i)])
+        await changeColorAnimation(arr, i, PINK_COLOR, time)
+        await heapify(arr, n, i)
     }
 
     for (let i = n - 1; i > 0; i--) {
-        await changeColorAnimation(arr, i, THIRST_COLOR, 200)
+        await changeColorAnimation(arr, i, THIRST_COLOR, time)
         await Promise.all([
-            swapHeight(arr, 0, i),
-            swapContent(arr, 0, i),
-            heapify(arr, i, 0),
+            swapHeight(arr, 0, i, time),
+            swapContent(arr, 0, i, time),
+            heapify(arr, i, 0, time),
         ])
     }
     arr[0].style.backgroundColor = THIRST_COLOR

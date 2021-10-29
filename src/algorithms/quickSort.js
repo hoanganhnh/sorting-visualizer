@@ -9,7 +9,7 @@ import {
 } from '../constants'
 import { getValueBar, sleep, swapContentNormal, swapHeightNormal } from '../helpers'
 
-const partition = async (arr, start, end) => {
+const partition = async (arr, start, end, time) => {
     const poviotValues = getValueBar(arr, end)
     let i = start - 1
     arr[end].style.backgroundColor = SECONDARY_COLOR
@@ -18,7 +18,7 @@ const partition = async (arr, start, end) => {
         const currentBar = getValueBar(arr, j)
 
         arr[j].style.backgroundColor = YELLOW_COLOR
-        await sleep(TIME_SPEED)
+        await sleep(time || TIME_SPEED)
 
         if (currentBar <= poviotValues) {
             i++
@@ -30,12 +30,12 @@ const partition = async (arr, start, end) => {
             if (i !== j) {
                 arr[j].style.backgroundColor = ORANGE_COLOR
             }
-            await sleep(TIME_SPEED)
+            await sleep(time || TIME_SPEED)
         } else {
             arr[j].style.backgroundColor = PINK_COLOR
         }
     }
-    await sleep(TIME_SPEED)
+    await sleep(time || TIME_SPEED)
 
     swapHeightNormal(arr, i + 1, end)
     swapContentNormal(arr, i + 1, end)
@@ -43,7 +43,7 @@ const partition = async (arr, start, end) => {
     arr[end].style.background = PINK_COLOR
     arr[i + 1].style.background = THIRST_COLOR
 
-    await sleep(TIME_SPEED)
+    await sleep(time || TIME_SPEED)
 
     for (let k = 0; k < arr.length; k++) {
         if (arr[k].style.background !== THIRST_COLOR) {
@@ -54,12 +54,12 @@ const partition = async (arr, start, end) => {
     return i + 1
 }
 
-const quickSort = async (arr, start, end) => {
+const quickSort = async (arr, start, end, time) => {
     if (start < end) {
-        const position = await partition(arr, start, end)
+        const position = await partition(arr, start, end, time)
         await Promise.all([
-            quickSort(arr, start, position - 1),
-            quickSort(arr, position + 1, end),
+            quickSort(arr, start, position - 1, time),
+            quickSort(arr, position + 1, end, time),
         ])
     } else if (start >= 0 && end >= 0 && start < arr.length && end < arr.length) {
         arr[end].style.background = THIRST_COLOR

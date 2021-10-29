@@ -1,10 +1,10 @@
 import { CORLOR_RUN, PINK_COLOR, THIRST_COLOR } from '../constants'
 import { changeColorAnimation, finishedSort, getValueBar } from '../helpers'
 
-const insertionSort = async () => {
+const insertionSort = async (time) => {
     const bars = document.querySelectorAll('.bar')
 
-    await changeColorAnimation(bars, 0, THIRST_COLOR)
+    await changeColorAnimation(bars, 0, THIRST_COLOR, time)
 
     for (let i = 1; i < bars.length; i++) {
         const key = getValueBar(bars, i)
@@ -12,7 +12,7 @@ const insertionSort = async () => {
         const heightElement = bars[i].style.height
         let j = i - 1
 
-        await changeColorAnimation(bars, i, CORLOR_RUN)
+        await changeColorAnimation(bars, i, CORLOR_RUN, time)
 
         while (j >= 0 && getValueBar(bars, j) > key) {
             await changeColorAnimation(bars, j, CORLOR_RUN, 100)
@@ -30,10 +30,10 @@ const insertionSort = async () => {
         bars[j + 1].style.height = heightElement
         bars[j + 1].childNodes[0].innerHTML = key
 
-        await changeColorAnimation(bars, i, THIRST_COLOR)
+        await changeColorAnimation(bars, i, THIRST_COLOR, time)
         if (i === bars.length - 1) {
             for (let k = i; k >= 0; k--) {
-                await changeColorAnimation(bars, k, THIRST_COLOR, 100)
+                await changeColorAnimation(bars, k, THIRST_COLOR, time)
             }
         }
     }
