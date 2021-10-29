@@ -1,27 +1,17 @@
 import React, { useEffect, useState } from 'react'
+import { useSelector } from 'react-redux'
 
-import { randomIntFromInterval } from '../helpers'
-import { PRIMARY_COLOR, COUNT_RANGE } from '../constants'
+import { PRIMARY_COLOR } from '../constants'
+import { setCurrentArraySelector } from '../redux/slices/setCurrentArray'
 import './SortingVisualier.css'
 
 function SortingVisualier() {
-    const [currentArray, setCurrentArray] = useState([])
-
-    const resetArray = () => {
-        const array = []
-        for (let i = 0; i < COUNT_RANGE; i++) {
-            array.push(randomIntFromInterval(20, 400))
-        }
-        setCurrentArray(array)
-        const arr = document.querySelectorAll('.bar')
-        for (let k = 0; k < arr.length; k++) {
-            arr[k].style.backgroundColor = PRIMARY_COLOR
-        }
-    }
+    const amountArray = useSelector(setCurrentArraySelector)
+    const [currentArray, setCurrentArray] = useState(amountArray)
 
     useEffect(() => {
-        resetArray()
-    }, [])
+        setCurrentArray(amountArray)
+    }, [amountArray])
 
     return (
         <>
@@ -41,9 +31,6 @@ function SortingVisualier() {
                     </div>
                 ))}
             </div>
-            <button type="button" onClick={resetArray}>
-                Create New Array
-            </button>
         </>
     )
 }

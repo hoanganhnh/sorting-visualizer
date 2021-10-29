@@ -1,4 +1,5 @@
 import React, { useState } from 'react'
+import { useDispatch } from 'react-redux'
 
 import { useClickOutside } from '../hooks'
 import ChartIcon from '../assets/img/chart.svg'
@@ -13,6 +14,9 @@ import {
 } from '../algorithms'
 
 import './NavBar.css'
+import { COUNT_RANGE, PRIMARY_COLOR } from '../constants'
+import { randomIntFromInterval } from '../helpers'
+import { updateArray } from '../redux/slices/setCurrentArray'
 
 const QUICK_SORT = 'Quick Sort'
 const HEAP_SORT = 'Heap Sort'
@@ -57,6 +61,8 @@ function NavBar() {
     const [showSpeed, setShowSpeed] = useState(false)
     const [value, setValue] = useState(10)
     const [typeAlgorithm, setTypeAlgorithm] = useState('')
+
+    const dispatch = useDispatch()
 
     const dropdownRef = React.useRef()
     const speedRef = React.useRef()
@@ -116,6 +122,18 @@ function NavBar() {
         }
         return undefined
     }
+    const resetArray = () => {
+        setTypeAlgorithm('')
+        const array = []
+        for (let i = 0; i < COUNT_RANGE; i++) {
+            array.push(randomIntFromInterval(20, 400))
+        }
+        dispatch(updateArray(array))
+        const arr = document.querySelectorAll('.bar')
+        for (let k = 0; k < arr.length; k++) {
+            arr[k].style.backgroundColor = PRIMARY_COLOR
+        }
+    }
     useClickOutside(dropdownRef, () => setShowDropdown(false))
     useClickOutside(speedRef, () => setShowSpeed(false))
     return (
@@ -126,7 +144,13 @@ function NavBar() {
                     Sorting Visualizer
                 </h1>
                 <div className="nav-content">
-                    <div className="nav-item">Reset Array</div>
+                    <div
+                        className="nav-item"
+                        aria-hidden="true"
+                        onClick={resetArray}
+                    >
+                        Reset Array
+                    </div>
                     <div className="nav-item">
                         Size
                         <input

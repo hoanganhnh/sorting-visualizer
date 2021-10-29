@@ -13,4 +13,5 @@ const setCurrentArray = createSlice({
 })
 
 export const { updateArray } = setCurrentArray.actions
+export const setCurrentArraySelector = (state) => state.setCurrentArray.currentArray
 export default setCurrentArray.reducer
