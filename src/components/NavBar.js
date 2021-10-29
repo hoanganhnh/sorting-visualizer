@@ -27,11 +27,13 @@ import {
     SPEED_NORMAL,
     SPEED_MEDIUM,
     SPEED_FAST,
+    SPEED_SUPER_FAST,
     SPEEDS,
     TIME_SPEED_SLOW,
     TIME_SPEED_NORMAL,
     TIME_SPEED_MEDIUM,
     TIME_SPEED_FAST,
+    TIME_SPEED_SUPER_FAST,
 } from '../constants'
 import { randomIntFromInterval } from '../helpers'
 import { updateArray } from '../redux/slices/setCurrentArray'
@@ -44,6 +46,7 @@ import './NavBar.css'
 function NavBar() {
     const [showDropdown, setShowDropdown] = useState(false)
     const [showSpeed, setShowSpeed] = useState(false)
+    const [disable, setDisable] = useState(false)
     const [value, setValue] = useState(10)
     const [typeAlgorithm, setTypeAlgorithm] = useState('')
     const [typeSpeed, setTypeSpeed] = useState('')
@@ -101,6 +104,10 @@ function NavBar() {
             setTypeSpeed(SPEED_FAST)
             dispatch(updateTime(TIME_SPEED_FAST))
         }
+        if (type === SPEED_SUPER_FAST) {
+            setTypeSpeed(SPEED_SUPER_FAST)
+            dispatch(updateTime(TIME_SPEED_SUPER_FAST))
+        }
     }
     const onResetColorBar = () => {
         const arr = document.querySelectorAll('.bar')
@@ -108,40 +115,63 @@ function NavBar() {
             arr[k].style.backgroundColor = PRIMARY_COLOR
         }
     }
+    const initCurrentBars = () => {
+        const array = []
+        for (let i = 0; i < Number(value) * 2; i++) {
+            array.push(
+                randomIntFromInterval(
+                    20,
+                    Math.floor(document.body.clientHeight / 1.2),
+                ),
+            )
+        }
+        return array
+    }
     const actionSort = async (type) => {
         onResetColorBar()
+        if (!typeSpeed) return
         const bars = document.querySelectorAll('.bar')
         const size = bars.length
         if (type === INSERT_SORT) {
-            insertionSort(currentTimeSpeed)
+            setDisable(true)
+            await insertionSort(currentTimeSpeed)
+            setDisable(false)
         }
         if (type === SELECT_SORT) {
-            selectionSort(currentTimeSpeed)
+            setDisable(true)
+            await selectionSort(currentTimeSpeed)
+            setDisable(false)
         }
         if (type === SHELL_SORT) {
-            shellSort(currentTimeSpeed)
+            setDisable(true)
+            await shellSort(currentTimeSpeed)
+            setDisable(false)
         }
         if (type === HEAP_SORT) {
-            heapSort(currentTimeSpeed)
+            setDisable(true)
+            await heapSort(currentTimeSpeed)
+            setDisable(false)
         }
         if (type === BUBBLE_SORT) {
-            bubbleSort(currentTimeSpeed)
+            setDisable(true)
+            await bubbleSort(currentTimeSpeed)
+            setDisable(false)
         }
         if (type === QUICK_SORT) {
-            quickSort(bars, 0, size - 1, currentTimeSpeed)
+            setDisable(true)
+            await quickSort(bars, 0, size - 1, currentTimeSpeed)
+            setDisable(false)
         }
         if (type === MERGED_SORT) {
-            mergeSort(bars, 0, size - 1, currentTimeSpeed)
+            setDisable(true)
+            await mergeSort(bars, 0, size - 1, currentTimeSpeed)
+            setDisable(false)
         }
-        return undefined
     }
     const resetArray = () => {
         setTypeAlgorithm('')
         setTypeSpeed('')
-        const array = []
-        for (let i = 0; i < Number(value) * 2; i++) {
-            array.push(randomIntFromInterval(20, 500))
-        }
+        const array = initCurrentBars()
         dispatch(updateArray(array))
         const arr = document.querySelectorAll('.bar')
         for (let k = 0; k < arr.length; k++) {
@@ -152,10 +182,7 @@ function NavBar() {
     useClickOutside(speedRef, () => setShowSpeed(false))
 
     useEffect(() => {
-        const array = []
-        for (let i = 0; i < Number(value) * 2; i++) {
-            array.push(randomIntFromInterval(20, 500))
-        }
+        const array = initCurrentBars()
         onResetColorBar()
         dispatch(updateArray(array))
     }, [value])
@@ -168,13 +195,13 @@ function NavBar() {
                 </h1>
                 <div className="nav-content">
                     <div
-                        className="nav-item"
+                        className={`nav-item ${disable ? 'disable' : ''}`}
                         aria-hidden="true"
                         onClick={resetArray}
                     >
                         Reset Array
                     </div>
-                    <div className="nav-item">
+                    <div className={`nav-item ${disable ? 'disable' : ''}`}>
                         Size
                         <input
                             type="range"
@@ -188,7 +215,9 @@ function NavBar() {
                         />
                     </div>
                     <div
-                        className={`nav-item ${showDropdown ? 'btn-active' : ''}`}
+                        className={`nav-item ${showDropdown ? 'btn-active' : ''} ${
+                            disable ? 'disable' : ''
+                        }`}
                         aria-hidden="true"
                         onClick={handleShowDropdown}
                         ref={dropdownRef}
@@ -221,13 +250,15 @@ function NavBar() {
                     <button
                         type="button"
                         disable="true"
-                        className="btn"
+                        className={`btn ${disable ? 'btn-disabled' : ''}`}
                         onClick={() => actionSort(typeAlgorithm)}
                     >
                         Sort
                     </button>
                     <div
-                        className={`nav-item ${showSpeed ? 'btn-active' : ''}`}
+                        className={`nav-item ${showSpeed ? 'btn-active' : ''} ${
+                            disable ? 'disable' : ''
+                        }`}
                         aria-hidden="true"
                         onClick={handleShowSpeed}
                         ref={speedRef}

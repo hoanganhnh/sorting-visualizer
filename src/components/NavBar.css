@@ -33,7 +33,7 @@
 .nav-content {
     flex: 4;
     display: flex;
-    justify-content: space-evenly;
+    justify-content: flex-end;
     align-items: center;
 }
 
@@ -144,5 +144,11 @@
 
 .disable {
     pointer-events: none;
-    color: #DC143C;
+    user-select: none;
+    color: #FF6347;
+}
+
+.btn-disabled {
+    pointer-events: none;
+    user-select: none;
 }

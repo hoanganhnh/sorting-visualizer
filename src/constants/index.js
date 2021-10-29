@@ -3,6 +3,7 @@ export const TIME_SPEED_SLOW = 500
 export const TIME_SPEED_NORMAL = 200
 export const TIME_SPEED_MEDIUM = 100
 export const TIME_SPEED_FAST = 50
+export const TIME_SPEED_SUPER_FAST = 20
 
 // This is the main color of the array bars.
 export const PRIMARY_COLOR = 'turquoise'
@@ -59,6 +60,7 @@ export const SPEED_SLOW = 'Slow'
 export const SPEED_NORMAL = 'Normal'
 export const SPEED_MEDIUM = 'Medium'
 export const SPEED_FAST = 'Fast'
+export const SPEED_SUPER_FAST = 'Super fast'
 export const SPEEDS = [
     {
         id: 1,
@@ -75,5 +77,9 @@ export const SPEEDS = [
     {
         id: 4,
         type: SPEED_FAST,
+    },
+    {
+        id: 5,
+        type: SPEED_SUPER_FAST,
     },
 ]
