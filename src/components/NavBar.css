@@ -141,3 +141,8 @@
     margin-left: 8px;
     cursor: pointer;
 }
+
+.disable {
+    pointer-events: none;
+    color: #DC143C;
+}

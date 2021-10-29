@@ -209,6 +209,7 @@ function NavBar() {
                     </div>
                     <button
                         type="button"
+                        disable="true"
                         className="btn"
                         onClick={() => actionSort(typeAlgorithm)}
                     >

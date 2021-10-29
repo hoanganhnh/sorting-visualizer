@@ -26,6 +26,7 @@
 .bar {
     /* width: 28px; */
     transition: 0.2s all ease;
+    user-select: none; 
 }
 
 .bar > span {

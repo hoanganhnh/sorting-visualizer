@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from 'react'
+import React from 'react'
 import { useSelector } from 'react-redux'
 
 import { PRIMARY_COLOR } from '../constants'
@@ -7,22 +7,15 @@ import './SortingVisualier.css'
 
 function SortingVisualier() {
     const amountArray = useSelector(setCurrentArraySelector)
-    const [currentArray, setCurrentArray] = useState(amountArray)
 
-    useEffect(() => {
-        setCurrentArray(amountArray)
-    }, [amountArray])
-
-    const numWidth = Math.floor(
-        document.body.clientWidth / (currentArray.length * 3),
-    )
+    const numWidth = Math.floor(document.body.clientWidth / (amountArray.length * 3))
     const width = `${numWidth * 2}px`
     const color = numWidth > 20 ? 'white' : 'transparent'
 
     return (
         <>
             <div className="data-container">
-                {currentArray.map((value, index) => (
+                {amountArray.map((value, index) => (
                     <div
                         className="bar"
                         // eslint-disable-next-line react/no-array-index-key
