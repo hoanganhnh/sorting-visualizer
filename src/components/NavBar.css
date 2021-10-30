@@ -67,7 +67,6 @@
     left: 12px;
     width: 172px;
     box-shadow: rgba(0, 0, 0, 0.24) 0px 3px 8px;
-
 }
 
 .btn-active {
@@ -86,7 +85,6 @@
     font-weight: 500;
     margin-bottom: 8px;
     transition: all 0.25s ease;
-
 }
 
 .algorithm:hover {
@@ -115,7 +113,6 @@
     transform: rotate(180deg);
 }
 
-
 .btn {
     outline: none;
     border: none;
@@ -131,7 +128,6 @@
     transition: all 0.25s ease;
 }
 
-
 .btn:hover {
     background-color: #16a588;
     color: #fafafa;
@@ -145,7 +141,7 @@
 .disable {
     pointer-events: none;
     user-select: none;
-    color: #FF6347;
+    color: #ff6347;
 }
 
 .btn-disabled {
