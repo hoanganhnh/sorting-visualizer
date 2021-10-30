@@ -1,6 +1,5 @@
 # Sorting Visualize
 
-## **Demo** 
 ![demo sorting](public/sorting-demo.gif)
 
 ### `yarn start`
