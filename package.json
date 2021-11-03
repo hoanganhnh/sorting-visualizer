@@ -1,4 +1,5 @@
 {
+	"homepage": "https://hoanganh20012001.github.io/sorting-visualizer",
 	"name": "sorting-visualizer",
 	"version": "0.1.0",
 	"private": true,
@@ -19,7 +20,9 @@
 		"start": "react-scripts start",
 		"build": "react-scripts build",
 		"test": "react-scripts test",
-		"eject": "react-scripts eject"
+		"eject": "react-scripts eject",
+		"predeploy": "npm run build",
+		"deploy": "gh-pages -d build"
 	},
 	"eslintConfig": {
 		"extends": [
@@ -49,6 +52,7 @@
 		"eslint-plugin-prettier": "^4.0.0",
 		"eslint-plugin-react": "^7.26.1",
 		"eslint-plugin-react-hooks": "^4.2.0",
+		"gh-pages": "^3.2.3",
 		"prettier": "^2.4.1"
 	}
 }
