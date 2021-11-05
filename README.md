@@ -4,7 +4,7 @@
 
 ### `You can access it here`:
 
-[https://hoanganh20012001.github.io/sorting-visualizer/](https://hoanganh20012001.github.io/sorting-visualizer/)
+[https://hoanganhnh.github.io/sorting-visualizer/](https://hoanganh20012001.github.io/sorting-visualizer/)
 
 ### `yarn start`
 
