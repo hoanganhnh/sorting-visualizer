@@ -2,7 +2,7 @@
 
 ![demo sorting](public/sorting-demo.gif)
 
-### `You can access it here`:
+## `You can access it here`
 
 [https://hoanganhnh.github.io/sorting-visualizer/](https://hoanganhnh.github.io/sorting-visualizer/)
 
